@@ -42,14 +42,14 @@ superuser from within a linked container or from the output of `docker inspect
 postgresql`.
 
 If you set DB=database_name, when the container runs it will create a new
-database with the USER having full ownership of it.
+database with the PG_USER having full ownership of it.
 
 ``` shell
 $ mkdir -p /tmp/postgresql
 $ docker run -d --name="postgresql" \
              -p 127.0.0.1:5432:5432 \
              -v /tmp/postgresql:/data \
-             -e USER="super" \
+             -e PG_USER="super" \
              -e DB="database_name" \
              -e PASS="$(pwgen -s -1 16)" \
              paintedfox/postgresql
@@ -68,7 +68,7 @@ directory, and the superuser username and password on the host like so:
 $ sudo mkdir -p /srv/docker/postgresql
 $ make run PORT=127.0.0.1:5432 \
            DATA_DIR=/srv/docker/postgresql \
-           USER=super \
+           PG_USER=super \
            PASS=$(pwgen -s -1 16)
 ```
 
@@ -136,7 +136,7 @@ $ psql -U "$DB_ENV_USER" \
        -p "$DB_PORT_5432_TCP_PORT"
 ```
 
-If you ran the *postgresql* container with the flags `-e USER=<user>` and `-e
+If you ran the *postgresql* container with the flags `-e PG_USER=<user>` and `-e
 PASS=<pass>`, then the linked container should have these variables available
 in its environment.  Since we aliased the database container with the name
 *db*, the environment variables from the database container are copied into the

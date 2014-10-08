@@ -31,9 +31,6 @@ RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql
 RUN sed -i -e"s/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/ssl-cert-snakeoil.key/" /etc/postgresql/9.3/main/postgresql.conf
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 
-ADD ssl-cert-snakeoil.key /
-RUN chmod 640 /ssl-cert-snakeoil.key && chgrp postgres /ssl-cert-snakeoil.key
-
 EXPOSE 5432
 ADD scripts /scripts
 RUN chmod +x /scripts/start.sh

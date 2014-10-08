@@ -20,6 +20,8 @@ pre_start_action() {
   chown -R postgres $DATA_DIR
   # Ensure we have the right permissions set on the DATA_DIR
   chmod -R 700 $DATA_DIR
+
+  cp -a /etc/ssl/private/ssl-cert-snakeoil.key /
 }
 
 post_start_action() {

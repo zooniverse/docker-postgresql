@@ -28,7 +28,11 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/9.3/main/postgresql.conf
 # Allow connections from anywhere.
 RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
+RUN sed -i -e"s/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/ssl-cert-snakeoil.key/" /etc/postgresql/9.3/main/postgresql.conf
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+
+ADD ssl-cert-snakeoil.key /
+RUN chmod 640 /ssl-cert-snakeoil.key && chgrp postgres /ssl-cert-snakeoil.key
 
 EXPOSE 5432
 ADD scripts /scripts

@@ -15,7 +15,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --force-yes \
-        postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 && \
+        postgresql-9.4 postgresql-client-9.4 postgresql-contrib-9.4 && \
     /etc/init.d/postgresql stop
 
 # Install other tools.
@@ -25,11 +25,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pwgen inotify-tools
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Cofigure the database to use our data dir.
-RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/9.3/main/postgresql.conf
+RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/9.4/main/postgresql.conf
 # Allow connections from anywhere.
-RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
-RUN sed -i -e"s/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/ssl-cert-snakeoil.key/" /etc/postgresql/9.3/main/postgresql.conf
-RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.4/main/postgresql.conf
+RUN sed -i -e"s/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/ssl-cert-snakeoil.key/" /etc/postgresql/9.4/main/postgresql.conf
+RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.4/main/pg_hba.conf
 
 EXPOSE 5432
 ADD scripts /scripts
@@ -42,6 +42,10 @@ RUN ln -s /scripts/start.sh /etc/service/postgresql/run
 
 # Expose our data, log, and configuration directories.
 VOLUME ["/data", "/var/log/postgresql", "/etc/postgresql"]
+
+# Create Stats Directory
+RUN mkdir -p /var/run/postgresql/9.4-main.pg_stat_tmp/
+RUN chown -R postgres:postgres /var/run/postgresql/9.4-main.pg_stat_tmp/
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
